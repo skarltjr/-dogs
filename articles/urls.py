@@ -5,7 +5,7 @@ from articles.views import createArticle, deleteArticle, getArticle, searchArtic
 
 urlpatterns = [
     path('newArticle',createArticle),
-    path('article',deleteArticle),
+    path('',deleteArticle),
     path('getArticle',getArticle),
     path('search',searchArticles)
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

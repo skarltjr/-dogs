@@ -43,8 +43,7 @@ def searchRequestArticles(request):
     keyword = data['keyword']
     requestArticle = RequestArticle.objects.all().filter(Q(title__contains=keyword))
     if requestArticle:
-        requestArticle = requestArticle.get() # 여러 게시글 리턴하는 방법 알아보기
-        return JsonResponse({'requestArticles': RequestArticleSerializer(requestArticle).data},status=200)    
+        return JsonResponse({'requestArticles': RequestArticleSerializer(requestArticle,many=True).data},status=200)    
     else:
         return JsonResponse({'message':"검색 조건에 해당하는 글이 없습니다"},status =404)
 

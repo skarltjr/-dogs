@@ -34,6 +34,9 @@ def createArticle(request):
 def getArticle(request):
     data = json.loads(request.body)
     targetId = data['articleId']
+    if not Article.objects.filter(id=targetId):
+        return JsonResponse({'message':"해당 게시글이 존재하지 않습니다."},status=404)
+    
     article = Article.objects.filter(id=targetId).get()
     return JsonResponse({'article': ArticleSerializer(article).data},status=200)
 
@@ -43,8 +46,7 @@ def searchArticles(request):
     keyword = data['keyword']
     article = Article.objects.all().filter(Q(title__contains=keyword))
     if article:
-        article = article.get() # 여러 게시글 리턴하는 방법 알아보기
-        return JsonResponse({'articles': ArticleSerializer(article).data},status=200)    
+        return JsonResponse({'articles': ArticleSerializer(article,many=True).data},status=200)    
     else:
         return JsonResponse({'message':"검색 조건에 해당하는 글이 없습니다"},status =404)
 
@@ -53,7 +55,9 @@ def searchArticles(request):
 def deleteArticle(request):
     data = json.loads(request.body)
     targetId = data['articleId']
-    article = Article.objects.filter(id=targetId).delete()
+    if not Article.objects.filter(id=targetId):
+        return JsonResponse({'message':"해당 게시글이 존재하지 않습니다."},status=404)    
 
+    article = Article.objects.filter(id=targetId).delete()
     
     return JsonResponse({'message':'success to delete article'},status=200)
